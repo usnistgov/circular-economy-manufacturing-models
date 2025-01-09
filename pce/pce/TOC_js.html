@@ -1,0 +1,682 @@
+<HTML>
+   <HEAD>
+      <STYLE>
+         SPAN {cursor: hand ; font-size: 8pt; font-family:Verdana,Arial,Helvetica;}
+         .bright {color: red ; font-size: 8pt; font-family:Verdana,Arial,Helvetica;}
+         .dark {color: black ; font-size: 8pt; font-family:Verdana,Arial,Helvetica;}
+      </STYLE>
+ <SCRIPT LANGUAGE="JScript">
+    var curLevel = 0;
+    var prevElement = null;
+    var prevLevel;
+    var prevID;
+    var builtHTML = "";
+ function MakeTree() {
+    var coll = document.all;
+    var level;
+    var id;
+    var tagBegin;
+    for (i=document.body.sourceIndex+1; i<coll.length; i++) {
+       switch (coll[i].tagName.substring(0,3)) {
+          case "LVL":        
+             level = parseInt( coll[i].tagName.charAt(3) + coll[i].tagName.charAt(4) );
+             break;
+          default:
+             level = -1;
+       }
+       if (level!=-1) {
+          id = i;
+          addElem(coll[i], level, id);
+       }
+    }
+    addElem(prevElement,0, prevID);
+    divWrap();
+    //   document.all.Debug.outerText = MyTree.innerHTML;
+ }
+ function addElem(el, level, id) {
+    if (prevElement == null)
+    {
+       prevElement = el;
+       prevLevel = level;
+       prevID = id;
+       return;
+    }
+    var s = "&nbsp;";
+    var s1 = "&nbsp;&nbsp;";
+    for (var j=0; j<prevLevel; j++)
+       s = s + s1;
+    
+    if (level > curLevel)
+    {
+       //alert(prevElement.outerHTML);
+       builtHTML += "<SPAN STYLE='cursor:hand' CLASS='dark'  IURL='" 
+                 + prevElement.getAttribute('IURL') 
+                 + "' ";
+
+       if (prevElement.getAttribute('IURL') != "")
+         builtHTML += "FLASHER"; 
+
+       builtHTML += " LEVEL='" 
+                 + curLevel
+                 + "' IS_POOL='"
+                 + prevElement.getAttribute('IS_POOL')
+                 + "' >"
+                 + s; 
+
+       
+       if( (curLevel == 0) || (prevElement.getAttribute('IS_POOL')=="1") )
+       {
+         builtHTML += "<IMG SRC='expand.gif' ID='OUT"; 
+       }
+       else if( curLevel == 1 )
+       {
+         builtHTML += "<IMG SRC='diagram+.gif' ID='OUT";
+       }
+       else
+       {
+         builtHTML += "<IMG SRC='activity+.gif' ID='OUT";
+       }
+       builtHTML += prevID.toString() 
+                 + "' CLASS='collapsible' "
+                 + " LEVEL='"
+                 + curLevel
+                 + "' IS_POOL='"
+                 + prevElement.getAttribute('IS_POOL')  
+                 + "'> &nbsp;&nbsp;" 
+                 + prevElement.getAttribute('ITEXT') 
+                 + "<BR></SPAN>" 
+                 + "<DIV ID='OUT" 
+                 + prevID.toString() 
+                 + "D' STYLE='display:none'  >"; 
+       curLevel = level;
+    }
+    else
+    {
+       builtHTML += "<SPAN STYLE='cursor:hand'  CLASS='dark' IURL='" 
+                 + prevElement.getAttribute('IURL'); 
+
+       if ( prevElement.getAttribute('IURL') != "" )
+         builtHTML += "' FLASHER"; 
+  
+       builtHTML += " LEVEL='" 
+                 + curLevel
+                 + "' >"
+                 + s; 
+       if( (curLevel == 0) || (prevElement.getAttribute('IS_POOL')=="1") )
+       {
+         builtHTML += "<IMG SRC='leaf.gif' "; 
+       }
+       else if( curLevel == 1 )
+       {
+         builtHTML += "<IMG SRC='diagram.gif' ";
+       }
+       else
+       {
+         builtHTML += "<IMG SRC='activity.gif' ";
+       }
+       builtHTML += " LEVEL='"
+                 + curLevel
+                 + "'>&nbsp;" 
+                 + prevElement.getAttribute('ITEXT') 
+                 + "<BR></SPAN>";
+       if (level < curLevel)
+       {
+          for (var tplev = level; tplev < curLevel; tplev++)
+             builtHTML += "</DIV>";
+          curLevel = level;
+       }
+    }   
+  
+    prevElement = el;
+    prevLevel = level;
+    prevID = id;
+ }
+
+ function divWrap() {
+    while (curLevel > 0)
+    {
+       builtHTML +=      "</DIV>";
+       curLevel--;
+    }
+    document.all.MyTree.innerHTML=builtHTML;
+ }
+
+ function clickHandler(frametype) {
+    var colId, colElem ;
+    var tpURL;
+    gifElem = window.event.srcElement;
+    if (gifElem.className == "collapsible") {
+ 
+       colId = gifElem.id + "D";
+       colElem = document.all(colId);
+       if (colElem.style.display == "none") {
+          colElem.style.display = "" ;
+          if( (gifElem.getAttribute("LEVEL") == "0") || (gifElem.getAttribute('IS_POOL')=="1") )
+          {
+            gifElem.src = "fixed.gif" ;
+            
+          }
+          else if( gifElem.getAttribute("LEVEL") == "1" )
+          {
+            gifElem.src = "diagram.gif" ;
+          }
+          else
+          {
+            gifElem.src = "activity.gif" ;
+          }
+       } else {
+          colElem.style.display = "none" ;
+          if( (gifElem.getAttribute("LEVEL") == "0") || (gifElem.getAttribute('IS_POOL')=="1") )
+          {
+            gifElem.src = "expand.gif" ;
+          }
+          else if( gifElem.getAttribute("LEVEL") == "1" )
+          {
+            gifElem.src = "diagram+.gif" ;
+          }
+          else
+          {
+            gifElem.src = "activity+.gif" ;
+          }
+       }
+    }
+    if (gifElem.className == "bright")
+    {
+       if(frametype == 3)
+       {  
+         with (parent.top.document.all)
+         {
+          if(gifElem.getAttribute("IURL") != "")
+            top.location=gifElem.getAttribute("IURL");
+         }
+       }
+       else
+       {
+         with (parent.frames[1].document.all)
+         {
+          if(gifElem.getAttribute("IURL") != "")
+            top.Right.location=gifElem.getAttribute("IURL");
+	    top.Down.location = "Blank.htm";		//load blank in lower frame, Kanika 02/07/05
+         }
+       }
+    }
+ }
+ function MakeBright() {
+    el = event.srcElement ;
+    if (el.getAttribute("FLASHER") != null) {
+       el.className = "bright" ;
+    }
+ }
+ 
+ function MakeDark() {
+    el = event.srcElement ;
+    if (el.getAttribute("FLASHER") != null) {
+       el.className = "dark";
+    }
+ }
+</SCRIPT><TITLE>Production in a circular economy</TITLE>
+</HEAD>
+
+<BODY  ONLOAD="MakeTree()">
+<H1>Production in a circular economy</H1>
+<A HREF=summary.html>Repository Summary</A><br><br>
+<NOBR><A HREF=TOC_Hier.html>Expanded Tree</A></NOBR><br>
+<NOBR><A HREF=index.html>Collapsed Tree</A></NOBR><br><br>
+<LVL0  ITEXT="Diagrams" IURL="" ITARGET=></LVL0>
+<LVL1  ITEXT="Production in a circular economy" IURL="dgmProduction%5Fin%5Fa%5Fcircular%5Feconomy23.html" Iï¾­Þï¾­Þd></LVL1>
+<LVL2  ITEXT="Produce in a circular economy" IURL="actuseProduce%5Fin%5Fa%5Fcircular%5Feconomy25.html" I´Ú></LVL2>
+<LVL3  ITEXT="A0: Produce in a circular economy" IURL="dgmA0COLON%5FProduce%5Fin%5Fa%5Fcircular%5Feconomy2650.html" I$Ú></LVL3>
+<LVL4  ITEXT="Design Product" IURL="actuseDesign%5FProduct5512.html" I”Ù></LVL4>
+<LVL5  ITEXT="A1: Design Product" IURL="dgmA1COLON%5FDesign%5FProduct4091.html" IÙ></LVL5>
+<LVL6  ITEXT="Identify engineering problem" IURL="actuseIdentify%5Fengineering%5Fproblem4132.html" ItØ></LVL6>
+<LVL6  ITEXT="Determine customer profile" IURL="actuseDetermine%5Fcustomer%5Fprofile4136.html" ItØ></LVL6>
+<LVL7  ITEXT="A12: Determine customer profile" IURL="dgmA12COLON%5FDetermine%5Fcustomer%5Fprofile9477.html" Iä×></LVL7>
+<LVL8  ITEXT="Analyze stakeholders" IURL="actuseAnalyze%5Fstakeholders9506.html" IT×></LVL8>
+<LVL8  ITEXT="Determine product opportunity" IURL="actuseDetermine%5Fproduct%5Fopportunity9529.html" IT×></LVL8>
+<LVL6  ITEXT="Establish engineering specifications" IURL="actuseEstablish%5Fengineering%5Fspecifications4490.html" ItØ></LVL6>
+<LVL6  ITEXT="Converge on design" IURL="actuseConverge%5Fon%5Fdesign4494.html" ItØ></LVL6>
+<LVL7  ITEXT="A14: Converge on design" IURL="dgmA14COLON%5FConverge%5Fon%5Fdesign9630.html" Iä×></LVL7>
+<LVL8  ITEXT="Generate design concepts" IURL="actuseGenerate%5Fdesign%5Fconcepts9650.html" IT×></LVL8>
+<LVL8  ITEXT="Evaluate design concepts" IURL="actuseEvaluate%5Fdesign%5Fconcepts9654.html" IT×></LVL8>
+<LVL8  ITEXT="Finalize design concept/s" IURL="actuseFinalize%5Fdesign%5FconceptSLASHs9658.html" IT×></LVL8>
+<LVL6  ITEXT="Create prototypes" IURL="actuseCreate%5Fprototypes4500.html" ItØ></LVL6>
+<LVL4  ITEXT="Acquire Materials" IURL="actuseAcquire%5FMaterials5573.html" I”Ù></LVL4>
+<LVL5  ITEXT="A2: Acquire Materials" IURL="dgmA2COLON%5FAcquire%5FMaterials1830.html" IÙ></LVL5>
+<LVL6  ITEXT="Extract materials" IURL="actuseExtract%5Fmaterials1833.html" ItØ></LVL6>
+<LVL6  ITEXT="Process materials" IURL="actuseProcess%5Fmaterials1872.html" ItØ></LVL6>
+<LVL4  ITEXT="Produce Product" IURL="actuseProduce%5FProduct5604.html" I”Ù></LVL4>
+<LVL5  ITEXT="A3: Produce Product" IURL="dgmA3COLON%5FProduce%5FProduct54.html" IÙ></LVL5>
+<LVL6  ITEXT="Manufacture" IURL="actuseManufacture3154.html" ItØ></LVL6>
+<LVL6  ITEXT="Assemble" IURL="actuseAssemble3167.html" ItØ></LVL6>
+<LVL6  ITEXT="Distribute" IURL="actuseDistribute3171.html" ItØ></LVL6>
+<LVL6  ITEXT="Prepare Product Design for Production" IURL="actusePrepare%5FProduct%5FDesign%5Ffor%5FProduction3846.html" ItØ></LVL6>
+<LVL7  ITEXT="A34: Prepare Product Design for Production" IURL="dgmA34COLON%5FPrepare%5FProduct%5FDesign%5Ffor%5FProduction1195.html" Iä×></LVL7>
+<LVL8  ITEXT="Define Production Processes" IURL="actuseDefine%5FProduction%5FProcesses1201.html" IT×></LVL8>
+<LVL8  ITEXT="Design Production Systems" IURL="actuseDesign%5FProduction%5FSystems1205.html" IT×></LVL8>
+<LVL8  ITEXT="Develop Production Sequence" IURL="actuseDevelop%5FProduction%5FSequence1209.html" IT×></LVL8>
+<LVL4  ITEXT="Use and Consume" IURL="actuseUse%5Fand%5FConsume5677.html" I”Ù></LVL4>
+<LVL5  ITEXT="A4: Use and Consume" IURL="dgmA4COLON%5FUse%5Fand%5FConsume85.html" IÙ></LVL5>
+<LVL6  ITEXT="Purchase" IURL="actusePurchase88.html" ItØ></LVL6>
+<LVL6  ITEXT="Use Product" IURL="actuseUse%5FProduct92.html" ItØ></LVL6>
+<LVL6  ITEXT="End of Use" IURL="actuseEnd%5Fof%5FUse96.html" ItØ></LVL6>
+<LVL6  ITEXT="By-product recapture" IURL="actuseBy%2Dproduct%5Frecapture442.html" ItØ></LVL6>
+<LVL6  ITEXT="Store product" IURL="actuseStore%5Fproduct3228.html" ItØ></LVL6>
+<LVL6  ITEXT="Downcycle product" IURL="actuseDowncycle%5Fproduct5822.html" ItØ></LVL6>
+<LVL4  ITEXT="Treat at End of Life" IURL="actuseTreat%5Fat%5FEnd%5Fof%5FLife5738.html" I”Ù></LVL4>
+<LVL5  ITEXT="A5: Treat at End of Life" IURL="dgmA5COLON%5FTreat%5Fat%5FEnd%5Fof%5FLife138.html" IÙ></LVL5>
+<LVL6  ITEXT="Collect end-of-life products" IURL="actuseCollect%5Fend%2Dof%2Dlife%5Fproducts4236.html" ItØ></LVL6>
+<LVL6  ITEXT="Clean/separate/sort products" IURL="actuseCleanSLASHseparateSLASHsort%5Fproducts4248.html" ItØ></LVL6>
+<LVL6  ITEXT="Treat end-of-life products" IURL="actuseTreat%5Fend%2Dof%2Dlife%5Fproducts4252.html" ItØ></LVL6>
+<LVL7  ITEXT="A53: Treat end-of-life products" IURL="dgmA53COLON%5FTreat%5Fend%2Dof%2Dlife%5Fproducts4255.html" Iä×></LVL7>
+<LVL8  ITEXT="Reuse" IURL="actuseReuse8493.html" IT×></LVL8>
+<LVL9  ITEXT="A531: Reuse" IURL="dgmA531COLON%5FReuse7871.html" IÄÖ></LVL9>
+<LVL10  ITEXT="Inspect reusable product" IURL="actuseInspect%5Freusable%5Fproduct7915.html" I4Ö></LVL10>
+<LVL10  ITEXT="Replace reusable product" IURL="actuseReplace%5Freusable%5Fproduct7919.html" I4Ö></LVL10>
+<LVL10  ITEXT="Reassemble reusable product" IURL="actuseReassemble%5Freusable%5Fproduct7923.html" I4Ö></LVL10>
+<LVL10  ITEXT="Test reusable product" IURL="actuseTest%5Freusable%5Fproduct7927.html" I4Ö></LVL10>
+<LVL8  ITEXT="Disassemble product" IURL="actuseDisassemble%5Fproduct8541.html" IT×></LVL8>
+<LVL9  ITEXT="A532: Disassemble product" IURL="dgmA532COLON%5FDisassemble%5Fproduct8667.html" IÄÖ></LVL9>
+<LVL10  ITEXT="Mechanical separation" IURL="actuseMechanical%5Fseparation8669.html" I4Ö></LVL10>
+<LVL10  ITEXT="Isolate dismantled streams" IURL="actuseIsolate%5Fdismantled%5Fstreams8673.html" I4Ö></LVL10>
+<LVL10  ITEXT="Test" IURL="actuseTest8677.html" I4Ö></LVL10>
+<LVL8  ITEXT="Remanufacture" IURL="actuseRemanufacture8545.html" IT×></LVL8>
+<LVL9  ITEXT="A533: Remanufacture" IURL="dgmA533COLON%5FRemanufacture7985.html" IÄÖ></LVL9>
+<LVL10  ITEXT="Inspect remanufacturable product" IURL="actuseInspect%5Fremanufacturable%5Fproduct8032.html" I4Ö></LVL10>
+<LVL10  ITEXT="Refurbish remanufacturable product" IURL="actuseRefurbish%5Fremanufacturable%5Fproduct8036.html" I4Ö></LVL10>
+<LVL10  ITEXT="Reassemble remanufacturable product" IURL="actuseReassemble%5Fremanufacturable%5Fproduct8040.html" I4Ö></LVL10>
+<LVL10  ITEXT="Test remanufacturable product" IURL="actuseTest%5Fremanufacturable%5Fproduct8044.html" I4Ö></LVL10>
+<LVL8  ITEXT="Recycle" IURL="actuseRecycle8600.html" IT×></LVL8>
+<LVL9  ITEXT="A534: Recycle" IURL="dgmA534COLON%5FRecycle4411.html" IÄÖ></LVL9>
+<LVL10  ITEXT="Mechanical recycling" IURL="actuseMechanical%5Frecycling4412.html" I4Ö></LVL10>
+<LVL10  ITEXT="Chemical recycling" IURL="actuseChemical%5Frecycling4425.html" I4Ö></LVL10>
+<LVL8  ITEXT="Incinerate" IURL="actuseIncinerate8656.html" IT×></LVL8>
+<LVL8  ITEXT="Landfill" IURL="actuseLandfill8663.html" IT×></LVL8>
+<LVL0  ITEXT=Pool ItemsIURL="" ITARGET=></LVL0>
+<LVL1  ITEXT="Activity Pool" IS_POOL="1" IURL=""></LVL1>
+<LVL2 ITEXT="Acquire Materials" IURL="actAcquire%5FMaterials1826.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Analyze stakeholders" IURL="actAnalyze%5Fstakeholders9505.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Assemble" IURL="actAssemble59.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="By-product recapture" IURL="actBy%2Dproduct%5Frecapture441.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="chemical molecular recycling" IURL="actchemical%5Fmolecular%5Frecycling165.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Chemical recycling" IURL="actChemical%5Frecycling161.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Clean/separate/sort products" IURL="actCleanSLASHseparateSLASHsort%5Fproducts4247.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Collect" IURL="actCollect3339.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Collect end-of-life products" IURL="actCollect%5Fend%2Dof%2Dlife%5Fproducts4235.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Collect product" IURL="actCollect%5Fproduct3247.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Control and Monitor Jobs" IURL="actControl%5Fand%5FMonitor%5FJobs1140.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Control Equipment" IURL="actControl%5FEquipment1148.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Converge on design" IURL="actConverge%5Fon%5Fdesign4493.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Coordinate Equipment Groups" IURL="actCoordinate%5FEquipment%5FGroups1144.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Create Process Flow" IURL="actCreate%5FProcess%5FFlow5963.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Create prototypes" IURL="actCreate%5Fprototypes4499.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Define Engineering Problem" IURL="actDefine%5FEngineering%5FProblem1196.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Define Production Processes" IURL="actDefine%5FProduction%5FProcesses1200.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Design a product" IURL="actDesign%5Fa%5Fproduct470.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Design product" IURL="actDesign%5Fproduct3275.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Design Product" IURL="actDesign%5FProduct3877.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Design Production Systems" IURL="actDesign%5FProduction%5FSystems1204.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Design products" IURL="actDesign%5Fproducts471.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Design solution" IURL="actDesign%5Fsolution3285.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Determine customer needs" IURL="actDetermine%5Fcustomer%5Fneeds4139.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Determine customer profile" IURL="actDetermine%5Fcustomer%5Fprofile4135.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Determine product opportunity" IURL="actDetermine%5Fproduct%5Fopportunity9528.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Develop Production Sequence" IURL="actDevelop%5FProduction%5FSequence1208.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Direct Personnel & Machines" IURL="actDirect%5FPersonnel%5F%26%5FMachines1136.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Disassemble product" IURL="actDisassemble%5Fproduct8053.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Dissasembly" IURL="actDissasembly477.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Distribute" IURL="actDistribute2994.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Distribution" IURL="actDistribution63.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Downcycle product" IURL="actDowncycle%5Fproduct5821.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Eliminate Waste" IURL="actEliminate%5FWaste5975.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="End of Use" IURL="actEnd%5Fof%5FUse95.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="End-of-Life" IURL="actEnd%2Dof%2DLife1131.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Establish engineering specifications" IURL="actEstablish%5Fengineering%5Fspecifications4489.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Establish Pull System" IURL="actEstablish%5FPull%5FSystem5967.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="evaluate design concepts" IURL="actevaluate%5Fdesign%5Fconcepts4495.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Evaluate design concepts" IURL="actEvaluate%5Fdesign%5Fconcepts9653.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Extract materials" IURL="actExtract%5Fmaterials29.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Finalize design concept/s" IURL="actFinalize%5Fdesign%5FconceptSLASHs9657.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="finalize design concepts" IURL="actfinalize%5Fdesign%5Fconcepts4497.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Generate design concepts" IURL="actGenerate%5Fdesign%5Fconcepts9649.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Identify engineering problem" IURL="actIdentify%5Fengineering%5Fproblem4131.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Identify Value and Non-value Processes" IURL="actIdentify%5FValue%5Fand%5FNon%2Dvalue%5FProcesses5955.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Implement Lean Plan" IURL="actImplement%5FLean%5FPlan5879.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Import materials" IURL="actImport%5Fmaterials3335.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Incinerate" IURL="actIncinerate3267.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Inspect remanufacturable product" IURL="actInspect%5Fremanufacturable%5Fproduct8031.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Inspect reusable product" IURL="actInspect%5Freusable%5Fproduct7914.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Isolate dismantled streams" IURL="actIsolate%5Fdismantled%5Fstreams8672.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="KC's Circularity in Manufacturing System" IURL="actKC%27s%5FCircularity%5Fin%5FManufacturing%5FSystem193.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Landfill" IURL="actLandfill3475.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Manage Materials" IURL="actManage%5FMaterials387.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Manufacture" IURL="actManufacture55.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Map the Value Stream" IURL="actMap%5Fthe%5FValue%5FStream5959.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Mechanical recycling" IURL="actMechanical%5Frecycling171.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Mechanical separation" IURL="actMechanical%5Fseparation8668.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Operationalize Continuous Improvement" IURL="actOperationalize%5FContinuous%5FImprovement5971.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Perform Jobs" IURL="actPerform%5FJobs389.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Plan Production" IURL="actPlan%5FProduction379.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Prepare Design" IURL="actPrepare%5FDesign375.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Prepare Design for Manufacturing" IURL="actPrepare%5FDesign%5Ffor%5FManufacturing1127.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Prepare Product Design for Production" IURL="actPrepare%5FProduct%5FDesign%5Ffor%5FProduction1119.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Process for end of life" IURL="actProcess%5Ffor%5Fend%5Fof%5Flife107.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Process materials" IURL="actProcess%5Fmaterials37.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Produce in a circular economy" IURL="actProduce%5Fin%5Fa%5Fcircular%5Feconomy24.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Produce Product" IURL="actProduce%5FProduct33.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="production 2" IURL="actproduction%5F22954.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Production 2" IURL="actProduction%5F21882.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Provide Production Resources" IURL="actProvide%5FProduction%5FResources1123.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Purchase" IURL="actPurchase87.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Reassemble remanufacturable product" IURL="actReassemble%5Fremanufacturable%5Fproduct8039.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Reassemble reusable product" IURL="actReassemble%5Freusable%5Fproduct7922.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Recycle" IURL="actRecycle3263.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="recycling" IURL="actrecycling140.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="redistribution" IURL="actredistribution152.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Reference architecture paper" IURL="actReference%5Farchitecture%5Fpaper1114.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Refurbish remanufacturable product" IURL="actRefurbish%5Fremanufacturable%5Fproduct8035.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Remanufacture" IURL="actRemanufacture3259.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="remanufacturing" IURL="actremanufacturing144.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="repair" IURL="actrepair284.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Replace reusable product" IURL="actReplace%5Freusable%5Fproduct7918.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Reuse" IURL="actReuse3255.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="reuse" IURL="actreuse148.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Reuse resources" IURL="actReuse%5Fresources2109.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Schedule Jobs" IURL="actSchedule%5FJobs383.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Send to landfill" IURL="actSend%5Fto%5Flandfill3271.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Store product" IURL="actStore%5Fproduct3227.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Take 2" IURL="actTake%5F22983.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Test" IURL="actTest8676.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Test remanufacturable product" IURL="actTest%5Fremanufacturable%5Fproduct8043.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Test reusable product" IURL="actTest%5Freusable%5Fproduct7926.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Treat at End of Life" IURL="actTreat%5Fat%5FEnd%5Fof%5FLife131.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Treat end-of-life products" IURL="actTreat%5Fend%2Dof%2Dlife%5Fproducts4251.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Treat product" IURL="actTreat%5Fproduct3251.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Use and Consume" IURL="actUse%5Fand%5FConsume78.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Use Product" IURL="actUse%5FProduct91.html" IÚ IS_POOL="1"></LVL2>
+<LVL1  ITEXT="Concept Pool" IS_POOL="1" IURL=""></LVL1>
+<LVL2 ITEXT=""waste products" IURL="conc%22waste%5Fproducts10186.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT=""waste" products" IURL="conc%22waste%22%5Fproducts99.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="3Ms" IURL="conc3Ms6023.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="5 Whys" IURL="conc5%5FWhys6017.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="5S" IURL="conc5S6019.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="acceptable components" IURL="concacceptable%5Fcomponents7930.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="acceptable sub-assemblies and/or components" IURL="concacceptable%5Fsub%2Dassemblies%5FandSLASHor%5Fcomponents8695.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="advertising" IURL="concadvertising5811.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Affinity mapping" IURL="concAffinity%5Fmapping4147.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="affinity mapping" IURL="concaffinity%5Fmapping9571.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="ash" IURL="concash8717.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="assembled product" IURL="concassembled%5Fproduct73.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="assembly" IURL="concassembly429.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="availability of partner manufacturers" IURL="concavailability%5Fof%5Fpartner%5Fmanufacturers218.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="available design software" IURL="concavailable%5Fdesign%5Fsoftware4552.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="biomass" IURL="concbiomass46.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="brainstorming" IURL="concbrainstorming4532.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="brand identity" IURL="concbrand%5Fidentity4538.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="broken product" IURL="concbroken%5Fproduct288.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="budget" IURL="concbudget5987.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="by-products" IURL="concby%2Dproducts9929.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="capacity plans" IURL="conccapacity%5Fplans419.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="captured use by-products" IURL="conccaptured%5Fuse%5Fby%2Dproducts322.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="cleaned/separated/sorted products" IURL="conccleanedSLASHseparatedSLASHsorted%5Fproducts4853.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="collected end-of-life products" IURL="conccollected%5Fend%2Dof%2Dlife%5Fproducts4851.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="communication" IURL="conccommunication6003.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="company approval" IURL="conccompany%5Fapproval4536.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="company business strategy" IURL="conccompany%5Fbusiness%5Fstrategy9827.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Company Dfx Goals" IURL="concCompany%5FDfx%5FGoals3279.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="company dfx goals" IURL="conccompany%5Fdfx%5Fgoals3899.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="company policies" IURL="conccompany%5Fpolicies184.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="concept selection" IURL="concconcept%5Fselection4520.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Consumer wants" IURL="concConsumer%5Fwants4143.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="consumer wants" IURL="concconsumer%5Fwants9542.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="continuous improvement" IURL="conccontinuous%5Fimprovement6013.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="corporate social responsibility (CSR)" IURL="conccorporate%5Fsocial%5Fresponsibility%5F%28CSR%293928.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="cost of gas" IURL="conccost%5Fof%5Fgas211.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="cost of item" IURL="conccost%5Fof%5Fitem5813.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="cost target" IURL="conccost%5Ftarget4534.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="cultural trends" IURL="conccultural%5Ftrends5875.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="customer order" IURL="conccustomer%5Forder5985.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="customer service" IURL="conccustomer%5Fservice5815.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="decision-matrix" IURL="concdecision%2Dmatrix9682.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="decision-matrix method/Pugh matrix" IURL="concdecision%2Dmatrix%5FmethodSLASHPugh%5Fmatrix4542.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="degraded product" IURL="concdegraded%5Fproduct10184.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="demand" IURL="concdemand4241.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Design activities" IURL="concDesign%5Factivities3917.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="design bill of materials" IURL="concdesign%5Fbill%5Fof%5Fmaterials1214.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="design BOM" IURL="concdesign%5FBOM9711.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="design concept" IURL="concdesign%5Fconcept319.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="design concepts" IURL="concdesign%5Fconcepts4518.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="design constraints" IURL="concdesign%5Fconstraints9819.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="design software" IURL="concdesign%5Fsoftware3915.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="designer/design team knowledge" IURL="concdesignerSLASHdesign%5Fteam%5Fknowledge9752.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="disassembled components" IURL="concdisassembled%5Fcomponents8687.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="disassembled EoL products" IURL="concdisassembled%5FEoL%5Fproducts8683.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="disassembled sub-assemblies" IURL="concdisassembled%5Fsub%2Dassemblies8685.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="disassembled used product" IURL="concdisassembled%5Fused%5Fproduct445.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="dissasembled product" IURL="concdissasembled%5Fproduct482.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="distributed product" IURL="concdistributed%5Fproduct75.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="distribution" IURL="concdistribution427.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="DMAIC" IURL="concDMAIC5983.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="downcycled product" IURL="concdowncycled%5Fproduct5877.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="efficient processes" IURL="concefficient%5Fprocesses6005.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="electricity" IURL="concelectricity4874.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="emerging technologies" IURL="concemerging%5Ftechnologies9837.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="emissions" IURL="concemissions4800.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="energy" IURL="concenergy10208.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="energy (recovered)" IURL="concenergy%5F%28recovered%2910236.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="engineering problem" IURL="concengineering%5Fproblem4509.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="engineering problem identification" IURL="concengineering%5Fproblem%5Fidentification1212.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="engineering specification targets" IURL="concengineering%5Fspecification%5Ftargets4528.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="engineering specifications" IURL="concengineering%5Fspecifications4516.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="environmental contamination (air, soil, water)" IURL="concenvironmental%5Fcontamination%5F%28air,%5Fsoil,%5Fwater%29179.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="equipment" IURL="concequipment4883.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="equipment state" IURL="concequipment%5Fstate1176.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="expertise" IURL="concexpertise4245.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="extended producer responsibility" IURL="concextended%5Fproducer%5Fresponsibility4239.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="facility cost estimate" IURL="concfacility%5Fcost%5Festimate1250.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="facility design" IURL="concfacility%5Fdesign3283.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Facility design" IURL="concFacility%5Fdesign1234.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="final bill of material" IURL="concfinal%5Fbill%5Fof%5Fmaterial403.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="flexibility" IURL="concflexibility6001.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="focus groups" IURL="concfocus%5Fgroups4145.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="fossil fuels" IURL="concfossil%5Ffuels52.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="government incentives" IURL="concgovernment%5Fincentives224.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="hard-to-recycle product" IURL="conchard%2Dto%2Drecycle%5Fproduct5819.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="high cost" IURL="conchigh%5Fcost213.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Higher-quality product" IURL="concHigher%2Dquality%5Fproduct6034.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="House of Quality (HOQ)" IURL="concHouse%5Fof%5FQuality%5F%28HOQ%294526.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Implementation data plan" IURL="concImplementation%5Fdata%5Fplan3859.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="imports" IURL="concimports417.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="incineration with energy recovery" IURL="concincineration%5Fwith%5Fenergy%5Frecovery113.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="industrial/virgin feedstock" IURL="concindustrialSLASHvirgin%5Ffeedstock43.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="information" IURL="concinformation10211.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="information (new/updated)" IURL="concinformation%5F%28newSLASHupdated%2910228.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="infrastructure" IURL="concinfrastructure4243.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="inspected remanufacturable product" IURL="concinspected%5Fremanufacturable%5Fproduct9090.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="inspected reusable product" IURL="concinspected%5Freusable%5Fproduct8342.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Instructions for product" IURL="concInstructions%5Ffor%5Fproduct4524.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="instructions from product" IURL="concinstructions%5Ffrom%5Fproduct3919.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="interviews " IURL="concinterviews%5F9841.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="job status" IURL="concjob%5Fstatus1168.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="jobs" IURL="concjobs407.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="jobs/lots" IURL="concjobsSLASHlots1152.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Kaizen" IURL="concKaizen6011.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="kanban" IURL="conckanban6009.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="labor" IURL="conclabor4878.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="landfill/off-gases" IURL="conclandfillSLASHoff%2Dgases4487.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="landfilled product" IURL="conclandfilled%5Fproduct111.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="laws and regulations" IURL="conclaws%5Fand%5Fregulations395.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="leakage and unmanaged dumps" IURL="concleakage%5Fand%5Funmanaged%5Fdumps176.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="lean culture" IURL="conclean%5Fculture6029.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="lean manufacturing theory" IURL="conclean%5Fmanufacturing%5Ftheory6031.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="line/cell state" IURL="conclineSLASHcell%5Fstate1178.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="line/cell task status" IURL="conclineSLASHcell%5Ftask%5Fstatus1180.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="line/cell tasks" IURL="conclineSLASHcell%5Ftasks1182.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="low-volume manufacturing methods" IURL="conclow%2Dvolume%5Fmanufacturing%5Fmethods4558.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="manufactured product" IURL="concmanufactured%5Fproduct71.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="manufacturing" IURL="concmanufacturing431.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="manufacturing capabilities" IURL="concmanufacturing%5Fcapabilities1232.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="manufacturing data package" IURL="concmanufacturing%5Fdata%5Fpackage405.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Manufacturing Data Package" IURL="concManufacturing%5FData%5FPackage1192.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="manufacturing deadlines" IURL="concmanufacturing%5Fdeadlines421.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="mapped value stream" IURL="concmapped%5Fvalue%5Fstream6217.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="market data" IURL="concmarket%5Fdata3897.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Market data" IURL="concMarket%5Fdata1221.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="material availability data" IURL="concmaterial%5Favailability%5Fdata9743.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="material that cannot be recycled mechanically" IURL="concmaterial%5Fthat%5Fcannot%5Fbe%5Frecycled%5Fmechanically9096.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="materials, energy, and information for product" IURL="concmaterials,%5Fenergy,%5Fand%5Finformation%5Ffor%5Fproduct10202.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="materials/products " IURL="concmaterialsSLASHproducts%5F10205.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="materials/products (recovered)" IURL="concmaterialsSLASHproducts%5F%28recovered%2910214.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="metals" IURL="concmetals48.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="minerals" IURL="concminerals50.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="morphological matrix" IURL="concmorphological%5Fmatrix4530.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="motivated employees" IURL="concmotivated%5Femployees6027.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="municipality infrastructure" IURL="concmunicipality%5Finfrastructure3925.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="old product" IURL="concold%5Fproduct266.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="operational improvement" IURL="concoperational%5Fimprovement246.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="overuse/overapplication" IURL="concoveruseSLASHoverapplication5827.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="packaging" IURL="concpackaging101.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="parts and kits" IURL="concparts%5Fand%5Fkits1187.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="PDCA" IURL="concPDCA6015.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="perform jobs" IURL="concperform%5Fjobs437.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="personnel and equipment" IURL="concpersonnel%5Fand%5Fequipment1185.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Physical model" IURL="concPhysical%5Fmodel3887.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="physical model" IURL="concphysical%5Fmodel9713.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Physical models" IURL="concPhysical%5Fmodels1218.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="physical product" IURL="concphysical%5Fproduct4556.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="pilot testing" IURL="concpilot%5Ftesting9948.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="planned obsolescence" IURL="concplanned%5Fobsolescence5825.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="point of sale" IURL="concpoint%5Fof%5Fsale3922.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="polymeric contamination" IURL="concpolymeric%5Fcontamination220.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="preliminary production cost estimate" IURL="concpreliminary%5Fproduction%5Fcost%5Festimate1230.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="previous design iterations" IURL="concprevious%5Fdesign%5Fiterations3913.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="process flow" IURL="concprocess%5Fflow5981.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="process models" IURL="concprocess%5Fmodels1248.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Product" IURL="concProduct5991.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="product" IURL="concproduct82.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="product business model" IURL="concproduct%5Fbusiness%5Fmodel9887.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Product data" IURL="concProduct%5Fdata4149.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="product data" IURL="concproduct%5Fdata9533.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="product demand" IURL="concproduct%5Fdemand6007.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="product design" IURL="concproduct%5Fdesign1111.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="product design specifications" IURL="concproduct%5Fdesign%5Fspecifications4522.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="product life cycle" IURL="concproduct%5Flife%5Fcycle5993.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Product model" IURL="concProduct%5Fmodel1216.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="product model" IURL="concproduct%5Fmodel9715.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="product opportunity " IURL="concproduct%5Fopportunity%5F4514.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="product orders" IURL="concproduct%5Forders397.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="production cost estimate" IURL="concproduction%5Fcost%5Festimate1238.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="production models" IURL="concproduction%5Fmodels1242.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="production sequence" IURL="concproduction%5Fsequence1236.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="products" IURL="concproducts409.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="profit target" IURL="concprofit%5Ftarget5989.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Pugh matrix " IURL="concPugh%5Fmatrix%5F9740.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="pull system" IURL="concpull%5Fsystem6219.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="purchase and applications" IURL="concpurchase%5Fand%5Fapplications435.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="purchased product" IURL="concpurchased%5Fproduct103.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="raw material" IURL="concraw%5Fmaterial415.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="raw materials" IURL="concraw%5Fmaterials41.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="reassembled remanufacturable product" IURL="concreassembled%5Fremanufacturable%5Fproduct9094.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="reassembled reusable product" IURL="concreassembled%5Freusable%5Fproduct8346.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="reburbished product" IURL="concreburbished%5Fproduct271.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="recovered energy" IURL="concrecovered%5Fenergy4483.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="recovered feedstock" IURL="concrecovered%5Ffeedstock135.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="recovered product" IURL="concrecovered%5Fproduct4822.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="recyclable product" IURL="concrecyclable%5Fproduct264.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="recycling" IURL="concrecycling115.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="redistributed product" IURL="concredistributed%5Fproduct279.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="redistribution" IURL="concredistribution121.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="refurbished product" IURL="concrefurbished%5Fproduct269.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="refurbished remanufacturable product" IURL="concrefurbished%5Fremanufacturable%5Fproduct9092.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="regulations" IURL="concregulations182.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Regulations" IURL="concRegulations3281.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="regulatory and internal testing" IURL="concregulatory%5Fand%5Finternal%5Ftesting4554.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="rejected components" IURL="concrejected%5Fcomponents8731.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="remanufactured product" IURL="concremanufactured%5Fproduct4818.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="remanufacturing" IURL="concremanufacturing124.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="repaired product" IURL="concrepaired%5Fproduct290.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="replaced reusable product" IURL="concreplaced%5Freusable%5Fproduct8344.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="required capabilities" IURL="concrequired%5Fcapabilities1228.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="resource availability" IURL="concresource%5Favailability399.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="resource control" IURL="concresource%5Fcontrol1166.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="resource description" IURL="concresource%5Fdescription425.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="resource desriptions" IURL="concresource%5Fdesriptions1244.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="resource reduction" IURL="concresource%5Freduction243.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Resource status" IURL="concResource%5Fstatus1156.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="resource usage" IURL="concresource%5Fusage411.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="resources" IURL="concresources413.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="resources/materials" IURL="concresourcesSLASHmaterials5995.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="reuse" IURL="concreuse118.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="reused packaging" IURL="concreused%5Fpackaging236.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="reused product component/sub-assembly" IURL="concreused%5Fproduct%5FcomponentSLASHsub%2Dassembly4485.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="reyclable product" IURL="concreyclable%5Fproduct5873.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="schedule jobs" IURL="concschedule%5Fjobs423.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="scrap" IURL="concscrap8689.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="scrap (from manufacturers)" IURL="concscrap%5F%28from%5Fmanufacturers%29205.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="scrap cuts of plastic from manufacturers" IURL="concscrap%5Fcuts%5Fof%5Fplastic%5Ffrom%5Fmanufacturers202.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="sequencing & routing" IURL="concsequencing%5F%26%5Frouting1226.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="service provider" IURL="concservice%5Fprovider5979.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="simulations" IURL="concsimulations4540.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="sludge" IURL="concsludge8714.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="SMED" IURL="concSMED6025.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="social pressure from consumers" IURL="concsocial%5Fpressure%5Ffrom%5Fconsumers186.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="stakeholder needs/desires" IURL="concstakeholder%5FneedsSLASHdesires4511.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="standards" IURL="concstandards227.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="standards compliance" IURL="concstandards%5Fcompliance4550.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="STEP" IURL="concSTEP4544.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="suppliers & capabilities" IURL="concsuppliers%5F%26%5Fcapabilities1240.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="supply chains" IURL="concsupply%5Fchains230.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="sustainable lean plan" IURL="concsustainable%5Flean%5Fplan6221.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="technological constraints" IURL="conctechnological%5Fconstraints9823.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="testing results" IURL="conctesting%5Fresults4546.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="testing results " IURL="conctesting%5Fresults%5F4548.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="time & cost data" IURL="conctime%5F%26%5Fcost%5Fdata1246.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="tooling & material orders" IURL="conctooling%5F%26%5Fmaterial%5Forders439.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="tooling and materials" IURL="conctooling%5Fand%5Fmaterials401.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="TPM" IURL="concTPM6021.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Treatment at end of life data" IURL="concTreatment%5Fat%5Fend%5Fof%5Flife%5Fdata4157.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="treatment at end of life data" IURL="conctreatment%5Fat%5Fend%5Fof%5Flife%5Fdata9539.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="unacceptable components" IURL="concunacceptable%5Fcomponents8693.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="unacceptable degraded component" IURL="concunacceptable%5Fdegraded%5Fcomponent8701.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="unacceptable degraded products" IURL="concunacceptable%5Fdegraded%5Fproducts8680.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="unacceptable degraded sub-assemblies" IURL="concunacceptable%5Fdegraded%5Fsub%2Dassemblies8691.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="unacceptable remanufacture components/products" IURL="concunacceptable%5Fremanufacture%5FcomponentsSLASHproducts8332.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="Unacceptable reuse components/products" IURL="concUnacceptable%5Freuse%5FcomponentsSLASHproducts7932.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="unacceptable reuse product" IURL="concunacceptable%5Freuse%5Fproduct8733.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="unrecovered material" IURL="concunrecovered%5Fmaterial6319.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="usable by-products" IURL="concusable%5Fby%2Dproducts4802.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="use and consumption" IURL="concuse%5Fand%5Fconsumption433.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="use and consumption data" IURL="concuse%5Fand%5Fconsumption%5Fdata4153.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="used product" IURL="concused%5Fproduct105.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="user/market research" IURL="concuserSLASHmarket%5Fresearch9951.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="value and non-value processes" IURL="concvalue%5Fand%5Fnon%2Dvalue%5Fprocesses6215.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="value of recycled materials" IURL="concvalue%5Fof%5Frecycled%5Fmaterials215.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="value- and non-value-added processes" IURL="concvalue%2D%5Fand%5Fnon%2Dvalue%2Dadded%5Fprocesses5997.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="virgin feedstock material" IURL="concvirgin%5Ffeedstock%5Fmaterial8711.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="virgin material feedstock" IURL="concvirgin%5Fmaterial%5Ffeedstock8047.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="virgin-equivalent feedstock material" IURL="concvirgin%2Dequivalent%5Ffeedstock%5Fmaterial199.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="virgin-equivalent feedstock material " IURL="concvirgin%2Dequivalent%5Ffeedstock%5Fmaterial%5F4787.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="VSM" IURL="concVSM5999.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="warranty" IURL="concwarranty5817.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="waste" IURL="concwaste4806.html" IÚ IS_POOL="1"></LVL2>
+<LVL2 ITEXT="water" IURL="concwater4876.html" IÚ IS_POOL="1"></LVL2>
+  <TABLE WIDTH=95% BORDER=0 ALIGN=left>
+
+    <TR><TD BGCOLOR="lightyellow">&nbsp;</TD></TR>
+    <TR><TD WIDTH=350 HEIGHT=340 VALIGN="top" BGCOLOR="lightyellow">
+    <DIV ID=MyTree>
+    </DIV>
+    <DIV ID=Debug>
+    </DIV>
+    </TD></TR>
+ </TABLE>
+<SCRIPT LANUGAGE="JScript">
+   document.onclick = function(){clickHandler(3);}
+   document.onmouseover = MakeBright;
+   document.onmouseout = MakeDark;
+</SCRIPT>
+<br clear=left>
+
+<center><p class="emaillink">
+<A class="emaillink" HREF="mailto:?subject=Re: Activity Modeling Project 'Production in a circular economy'">Send Feedback</A></p></center>
+</BODY>
+</HTML>
