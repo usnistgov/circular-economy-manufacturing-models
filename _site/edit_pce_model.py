@@ -111,6 +111,6 @@ if __name__ == "__main__":
     s = add_decomposition_images(s, imagename, linktodiagram)
     save_html(s, os.path.join(modeldict, filename))
     
-    filename = "index.html"
-    updates = {"notetitle": "Note", "note": "The Production in a Circular Economy (CE) model consists of five life cycle activities (Design Product, Acquire Materials, Produce Product, Use and Consume, and Treat at End of Life) that are consistent with manufacturing economic models. Using the IDEF0 functional modeling method, relevant inputs, outputs, controls, and mechanisms for each activity are defined. The five activities are described at a high level. The Circular Product Design model describes the Design Product activity of the CE model in depth, providing examples that are relevant for designing in a circular economy. Further research on downstream activities (Acquire Materials, Produce Product, Use and Consume, and Treat at End of Life) is ongoing and these activities may be missing detailed descriptions within the model."}
-    update_frontmatter(os.path.join(currentdict, filename), frontmatter_updates = updates)
+    # filename = "index.html"
+    # updates = {"notetitle": "Note", "note": "The Circular Product Design Activity Model describes a single activity of the broader Production in a Circular Economy Model in depth, providing examples that are relevant for designing in a circular economy. Further research on downstream activities (Acquire Materials, Produce Product, Use and Consume, and Treat at End of Life) is ongoing and these activities may be missing detailed descriptions within the model."}
+    # update_frontmatter(os.path.join(currentdict, filename), frontmatter_updates = updates)
