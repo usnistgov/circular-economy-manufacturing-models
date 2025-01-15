@@ -16,6 +16,7 @@
 
 .diag-nav-bar{
 	padding: 0;
+	margin: 0;
 }
 
 .diag-nav-item {
@@ -112,5 +113,10 @@
 .note-text{
 	margin: 0;
 	padding: 10 15 10 15;
+}
+
+.navlinks{
+	text-decoration: none;
+    font-weight: bold;
 }
 

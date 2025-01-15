@@ -137,7 +137,11 @@ def format_list_pools(soup, icom=False):
         mechheading = soup.find('h2', string='Mechanism')
         if mechheading:
             mechheading['id'] = "Mechanism"
-            
+        decompheading = soup.find('h2', string='Decomposition')
+        if decompheading:
+            decompheading['id'] = "Decomposition"
+        
+        decomptag = soup.find('h2', id='Decomposition')
         inputtag = soup.find('h2', id='Input')
         outputtag = soup.find('h2', id='Output')
         controltag = soup.find('h2', id='Control')
@@ -211,16 +215,20 @@ def format_list_pools(soup, icom=False):
         nav_html.nav.append(new_tag)
         
         if (icom == True):
-            new_tag = nav_html.new_tag("a", href="#Input")
-            new_tag.string = "Input, Output, Control, Mechanism (ICOM)"
+            new_tag = nav_html.new_tag("a", href="#Decomposition", attrs={'class':'navlinks'})
+            new_tag.string = "Decomposition"
+            nav_html.nav.ul.append(new_tag)
+            
+            new_tag = nav_html.new_tag("a", href="#Input", attrs={'class':'navlinks'})
+            new_tag.string = "ICOM"
             nav_html.nav.ul.append(new_tag)
             
         else:
-            new_tag = nav_html.new_tag("a", href="#Activities")
+            new_tag = nav_html.new_tag("a", href="#Activities", attrs={'class':'navlinks'})
             new_tag.string = "Activities"
             nav_html.nav.ul.append(new_tag)
             
-            new_tag = nav_html.new_tag("a", href="#Concepts")
+            new_tag = nav_html.new_tag("a", href="#Concepts", attrs={'class':'navlinks'})
             new_tag.string = "Concepts"
             nav_html.nav.ul.append(new_tag)
         
@@ -230,7 +238,7 @@ def format_list_pools(soup, icom=False):
             new_tag["class"] = "diag-nav-item"
             navelement.wrap(new_tag)
         
-        soup.h2.insert_after(nav_html)
+        soup.h2.insert_before(nav_html)
     return soup
 
 # Remove bullet points from items that are description information, not pool-items by adding the CSS class (all page types)
