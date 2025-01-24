@@ -112,5 +112,5 @@ if __name__ == "__main__":
     save_html(s, os.path.join(modeldict, filename))
     
     # filename = "index.html"
-    # updates = {"notetitle": "Note", "note": "The Circular Product Design (CPD) Activity Model describes a single activity of the broader Production in a Circular Economy (CE) Model in depth, providing examples that are relevant for designing in a circular economy. Further research on downstream activities (Acquire Materials, Produce Product, Use and Consume, and Treat at End of Life) is ongoing and these activities may be missing detailed descriptions within the model."}
+    # updates = {"notetitle": "Note", "note": "The Circular Product Design (CPD) Activity Model describes a single activity of the broader Production in a Circular Economy (CE) Model in depth, providing examples that are relevant for designing in a circular economy. Further research on downstream activities is ongoing and these activities may be missing detailed descriptions within the model."}
     # update_frontmatter(os.path.join(currentdict, filename), frontmatter_updates = updates)
