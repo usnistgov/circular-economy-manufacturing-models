@@ -1,0 +1,105 @@
+<HTML class="nist-footer-bottom">
+<Link rel="stylesheet" href={{"/assets/css/fontawesome/css/all.css" | relative_url}}>
+<Link rel="stylesheet" href={{"/assets/css/main.css" | relative_url}}>
+<Link rel="stylesheet" href={{"/assets/css/custom.css" | relative_url}}>
+
+<HEAD>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RJSMY46M5C"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RJSMY46M5C');
+</script>
+<!-- Old DAP UA tag -->
+<script async type="text/javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NIST&subagency=github&pua=UA-66610693-1&yt=true&exts=ppsx,pps,f90,sch,rtf,wrl,txz,m1v,xlsm,msi,xsd,f,tif,eps,mpg,xml,pl,xlt,c">
+</script>
+
+<!--exit notice scripts -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="https://pages.nist.gov/leaveNotice/js/jquery.leaveNotice-nist.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://pages.nist.gov/leaveNotice/css/jquery.leaveNotice.css" />
+
+<!-- header footer scripts -->
+<link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
+<script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+<TITLE>{{page.title}}</TITLE>
+<style>
+	.link-tree {
+		display: none;
+	}
+	.link-tree.expanded {
+		display: block;
+	}
+	.toggle-button {
+		cursor: pointer;
+	}
+</style>
+</HEAD>
+
+<BODY>
+<div id="main">
+<div class="all-content">
+<div class="sidebar">
+	<H3><A HREF="{{ 'index.html' | relative_url }}" style="text-decoration: none">Home</A></H3>
+	<H3><A HREF="{{ 'instructions.html' | relative_url }}" style="text-decoration: none">How To Navigate</A></H3>
+	<H3><A HREF="{{ 'references.html' | relative_url }}" style="text-decoration: none">References</A></H3>
+	<H3><A HREF="https://www.nist.gov/el/systems-integration-division-73400/manufacturing-circular-economy" style="text-decoration: none">Project Page <i class="fa-solid fa-arrow-up-right-from-square"></i></A></H3>
+	<NOBR><H2>Models</H2></NOBR>
+	<button id="toggle-link-tree" class="toggle-button">Expand Model Tree</button>
+	<br>
+	<br>	
+	{% include TOC_Hier.html %}
+</div>
+
+<div class="maincontent">
+{% if page.title %}
+<H1>{{ page.title }}</H1>
+{% endif %}
+
+{% if page.notetitle %}
+<div class="note">
+<div class="note-title">
+<p class="note-text">{{ page.notetitle }}</p>
+</div>
+<p class="note-text info">{{ page.note}}</p>
+</div>
+{% endif %}
+
+{{content}}
+</div>
+</div>
+<div class="disclaimer" id="disclaimer">
+<b>Disclaimer:</b> Certain commercial equipment, instruments, or materials are identified in this documentation to foster understanding. Such identification does not imply recommendation or endorsement by the National Institute of Standards and Technology, nor does it imply that the materials or equipment identified are necessarily the best available for the purpose.
+</div>
+</div>
+
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const toggleButtons = document.getElementsByClassName('toggle-button');
+		const linkTrees = document.getElementsByClassName('link-tree');
+		
+		for (let i = 0; i < toggleButtons.length; i++) {
+		  const button = toggleButtons[i];
+		  console.log(button.id);
+		  const linktree = linkTrees[i];
+		  console.log(linktree.id);
+		  button.addEventListener('click', () => {
+		  console.log('clicked');
+		  const isExpanded = linktree.classList.toggle('expanded');
+		  button.textContent = isExpanded ? 'Collapse Model Tree' : 'Expand Model Tree';
+		  })
+		}
+	});
+</script>
+<script src="/assets/js/makeImageMapResponsive.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(function(){
+	$('a[rel=external]').leaveNotice();
+});
+</script>
+</BODY>
+</HTML>
