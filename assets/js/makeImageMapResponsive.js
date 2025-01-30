@@ -37,5 +37,6 @@ document.addEventListener('load', function (){
 	}
 	
 	scaleMap();
+	window.addEventListener('load', scaleMap);
 	window.addEventListener('resize', scaleMap);
 });
