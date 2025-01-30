@@ -1,5 +1,5 @@
 
-document.addEventListener('DOMContentLoaded', function (){
+document.addEventListener('load', function (){
 
 	const img = document.querySelector('img[usemap]');
 	if (!img) return;
