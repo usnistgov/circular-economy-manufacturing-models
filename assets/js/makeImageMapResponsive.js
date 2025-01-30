@@ -1,5 +1,5 @@
 
-document.addEventListener('load', function (){
+document.addEventListener('DOMContentLoaded', function (){
 
 	const img = document.querySelector('img[usemap]');
 	if (!img) return;
@@ -37,6 +37,11 @@ document.addEventListener('load', function (){
 	}
 	
 	scaleMap();
-	window.addEventListener('load', scaleMap);
 	window.addEventListener('resize', scaleMap);
+	
+	document.onreadystatechange = function(){
+		if (document.readyState === 'complete'){
+			scaleMap();
+		}
+	}
 });
