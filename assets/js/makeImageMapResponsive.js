@@ -39,4 +39,10 @@ document.addEventListener('DOMContentLoaded', function (){
 	scaleMap();
 	window.addEventListener('load', scaleMap);
 	window.addEventListener('resize', scaleMap);
+	
+	document.onreadystatechange = function(){
+		if (document.readyState === 'complete'){
+			scaleMap();
+		}
+	}
 });
