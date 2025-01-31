@@ -85,11 +85,8 @@
 		
 		for (let i = 0; i < toggleButtons.length; i++) {
 		  const button = toggleButtons[i];
-		  console.log(button.id);
 		  const linktree = linkTrees[i];
-		  console.log(linktree.id);
 		  button.addEventListener('click', () => {
-		  console.log('clicked');
 		  const isExpanded = linktree.classList.toggle('expanded');
 		  button.textContent = isExpanded ? 'Collapse Model Tree' : 'Expand Model Tree';
 		  })
