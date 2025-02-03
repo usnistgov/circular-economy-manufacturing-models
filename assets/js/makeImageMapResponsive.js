@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function (){
 
 document.onreadystatechange = function(){
 	if (document.readyState === 'complete'){
-		console.log("loading complete");
 		const img = document.querySelector('img[usemap]');
 		if (!img) return;
 
@@ -68,7 +67,6 @@ document.onreadystatechange = function(){
 				});
 				area.setAttribute('coords', scaledCoords.join(','));
 			});
-			console.log('ran function');
 		}
 			
 		scaleMap();
