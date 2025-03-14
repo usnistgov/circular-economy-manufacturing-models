@@ -122,4 +122,8 @@
 <li>International Organization for Standardization. (2012). Information technology—Modeling Languages Part 1: Syntax and Semantics for IDEF0 (ISO/IEC/IEEE Nos. 31320-1:2012).</li>
 <br>
 <li>Funk, K. (2017, September 29). Task Analysis Using IDEF0 [Course (IE 545, Human Factors Engineering)].</li> 
+<br>
+<li>Babbitt, C. W., Althaf, S., Cruz Rios, F., Bilec, M. M., & Graedel, T. E. (2021). The role of design in circular economy solutions for critical materials. One Earth, 4(3), 353–362. https://doi.org/10.1016/j.oneear.2021.02.014</li>
+<br>
+<li>Mathur, N., Last, N., & Morris, K. C. (2023). A process model representation of the end-of-life phase of a product in a circular economy to identify standards needs. Frontiers in Manufacturing Technology, 3, 988073. https://doi.org/10.3389/fmtec.2023.988073</li>
 </ol>
