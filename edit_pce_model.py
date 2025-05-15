@@ -69,7 +69,7 @@ if __name__ == "__main__":
     
     ## Commented out since we may need to update the diagrams for these activities
     filename = "actuseAcquire_Materials5573.html"
-    updates = {"notetitle": "Note", "note": "This activity is not fully described."}
+    updates = {"notetitle": "Note", "note": "This activity is fully described. Click a decomposition, activity, or input/output/control/mechanism for descriptions and examples that are relevant for acquiring materials in a circular economy.."}
     update_frontmatter(os.path.join(modeldict, filename), frontmatter_updates = updates)
     imagename ="dgm161_AcquireMaterials.jpeg"
     linktodiagram = "dgmA2COLON_Acquire_Materials1830.html"
@@ -78,7 +78,7 @@ if __name__ == "__main__":
     save_html(s, os.path.join(modeldict, filename))
     
     filename = "actuseProduce_Product5604.html"
-    updates = {"notetitle": "Note", "note": "This activity is not fully described."}
+    updates = {"notetitle": "Note", "note": "This activity is fully described. Click a decomposition, activity, or input/output/control/mechanism for descriptions and examples that are relevant for producing (i.e., manufacturing) in a circular economy.."}
     update_frontmatter(os.path.join(modeldict, filename), frontmatter_updates = updates)
     imagename = "dgm190_ProduceProduct.jpeg"
     linktodiagram = "dgmA3COLON_Produce_Product54.html"
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     save_html(s, os.path.join(modeldict, filename))
     
     filename = "actuseUse_and_Consume5677.html"
-    updates = {"notetitle": "Note", "note": "This activity is not fully described."}
+    updates = {"notetitle": "Note", "note": "This activity is fully described. Click a decomposition, activity, or input/output/control/mechanism for descriptions and examples that are relevant for consuming in a circular economy.."}
     update_frontmatter(os.path.join(modeldict, filename), frontmatter_updates = updates)
     imagename = "dgm206_UseAndConsume.jpeg"
     linktodiagram = "dgmA4COLON_Use_and_Consume85.html"
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     save_html(s, os.path.join(modeldict, filename))
     
     filename = "actuseTreat_at_End_of_Life5738.html"
-    updates = {"notetitle": "Note", "note": "This activity is not fully described."}
+    updates = {"notetitle": "Note", "note": "This activity is fully described. Click a decomposition, activity, or input/output/control/mechanism for descriptions and examples that are relevant for end-of-life treatment in a circular economy.."}
     update_frontmatter(os.path.join(modeldict, filename), frontmatter_updates = updates)
     imagename = "dgm222_TreatAtEndOfLife.jpeg"
     linktodiagram = "dgmA5COLON_Treat_at_End_of_Life138.html"

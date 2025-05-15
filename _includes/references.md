@@ -126,4 +126,10 @@
 <li>Babbitt, C. W., Althaf, S., Cruz Rios, F., Bilec, M. M., & Graedel, T. E. (2021). The role of design in circular economy solutions for critical materials. One Earth, 4(3), 353–362. https://doi.org/10.1016/j.oneear.2021.02.014</li>
 <br>
 <li>Mathur, N., Last, N., & Morris, K. C. (2023). A process model representation of the end-of-life phase of a product in a circular economy to identify standards needs. Frontiers in Manufacturing Technology, 3, 988073. https://doi.org/10.3389/fmtec.2023.988073</li>
+<br>
+<li>Cui, J., & Zhang, L. (2008). Metallurgical recovery of metals from electronic waste: A review.  Journal of Hazardous Materials, 158(2-3), 228-256. https://doi.org/10.1016/j.jhazmat.2008.02.001</li>
+<br>
+<li>Safiuddin, M., Salam, M. A., & Jumaat, M. Z. (2011). Utilization of palm oil fuel ash in concrete: a review. Journal of Civil Engineering and Management, 17(2), 234-247. https://doi.org/10.3846/13923730.2011.574450</li>
+<br>
+<li>Jacobsen, N. B. (2006). Industrial Symbiosis in Kalundborg, Denmark: A Quantitative Assessment of Economic and Environmental Aspects. Journal of Industrial Ecology, 10(1-2), 239-255. https://doi.org/10.1162/108819806775545411</li>
 </ol>
