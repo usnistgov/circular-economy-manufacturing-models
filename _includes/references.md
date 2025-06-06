@@ -132,4 +132,6 @@
 <li>Safiuddin, M., Salam, M. A., & Jumaat, M. Z. (2011). Utilization of palm oil fuel ash in concrete: a review. Journal of Civil Engineering and Management, 17(2), 234-247. https://doi.org/10.3846/13923730.2011.574450</li>
 <br>
 <li>Jacobsen, N. B. (2006). Industrial Symbiosis in Kalundborg, Denmark: A Quantitative Assessment of Economic and Environmental Aspects. Journal of Industrial Ecology, 10(1-2), 239-255. https://doi.org/10.1162/108819806775545411</li>
+<br>
+<li>Schumacher, K., Morris, K., Last, N., and Costello, A. (2023). Fostering a Circular Economy of Manufacturing Materials Workshop Report. ASTM International. https://doi.org/10.1520/amcoe-economy-of-manufacturing-materials.</li>
 </ol>
